@@ -1,3 +1,4 @@
+require 'byebug'
 class MaxIntSet
   attr_reader :max, :store 
 
@@ -71,9 +72,10 @@ class ResizingIntSet
   end
 
   def insert(num)
-    unless include?(num)
+    # debugger
+    if !include?(num)
       @count += 1
-      resize! if count >= num_buckets
+      resize! if count > @num_buckets
       self[num] << num
     end
   end
@@ -96,13 +98,13 @@ class ResizingIntSet
   end
 
   def resize!
-    @num_buckets *= 2
+    @num_buckets = @num_buckets * 2
     copy = @store.dup
-    @store = Array.new(num_buckets) { Array.new }
+    @store = Array.new(@num_buckets) { Array.new }
     
     copy.each do |row|
       row.each do |ele|
-        insert(ele)
+        self[ele] << ele
       end
     end
   end
