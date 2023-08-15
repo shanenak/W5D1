@@ -1,6 +1,8 @@
+require 'Enumerable'
 class Node
   attr_reader :key
   attr_accessor :val, :next, :prev
+  include 'Enumerable'
 
   def initialize(key = nil, val = nil)
     @key = key
@@ -25,6 +27,8 @@ class LinkedList
     @head = Node.new()
     @tail = Node.new()
     @head.next = @tail
+    @head.prev = @tail
+    @tail.next = @head
     @tail.prev = @head
   end
 
@@ -34,12 +38,15 @@ class LinkedList
   end
 
   def first
+    @head.prev
   end
 
   def last
+    @tail.next
   end
 
   def empty?
+    @head.prev == @tail
   end
 
   def get(key)
@@ -50,12 +57,12 @@ class LinkedList
 
   def append(key, val)
     new_node = Node.new(key, val)
-    temp = @tail.prev
-    
-    new_node.next = @tail 
-    @tail.prev = new_node
-    new_node.prev = temp
-    temp.next = new_node
+    temp = @tail.next
+    new_node.prev = @tail 
+    @tail.next = new_node
+    new_node.next = temp
+    temp.prev = new_node
+    # end
   end
 
   def update(key, val)
@@ -65,6 +72,10 @@ class LinkedList
   end
 
   def each
+    node = @head.prev
+    until key.nil?
+      node = node.prev
+    end
   end
 
   # uncomment when you have `each` working and `Enumerable` included
